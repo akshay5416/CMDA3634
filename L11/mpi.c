@@ -42,11 +42,7 @@ srand48(seed);
 		}
 	}
      }
-  float sum;
-  double receive;
-  double pi = 4.0*Ncircle/ (double) Ntotal;
-  MPI_Reduce(&pi, &sum, 1, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD);
- // for(int i 
+   
 
   printf("Our estimate of pi is %f \n", pi);
   	
