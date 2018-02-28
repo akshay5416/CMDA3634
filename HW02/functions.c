@@ -1,11 +1,26 @@
-#includei <stdio.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 
 #include "functions.h"
 
+unsigned int modProd(unsigned int a, unsigned int b, unsigned int p);
+unsigned int modExp(unsigned int a, unsigned int b, unsigned int p); 
+unsigned int isProbablyPrime(unsigned int N);
+
+
+int main(int argc, char **argv){
+
+ int a = modProd(26, 13, 7);//2
+ int b = modExp(7, 6, 21);//7
+ int c = isProbablyPrime(37);
+ printf("This is modProd: %d ",a);
+ printf("This is modExp: %d", b);
+ printf("This is isProbablyPrime: %d", c); 
+
+}
 //compute a*b mod p safely
-unsigned int modprod(unsigned int a, unsigned int b, unsigned int p) {
+unsigned int modProd(unsigned int a, unsigned int b, unsigned int p) {
   /* Q1.2: Complete this function */
   int za = a;
   int ab = 0;
@@ -14,16 +29,16 @@ unsigned int modprod(unsigned int a, unsigned int b, unsigned int p) {
   int storeB = b;
   while(storeB != 0){
 	storeB = storeB/2;
-	n++;
+	n= n+1;
 }
 //Calculates using the steps I got from the other loop
   for (int i = 0; i<n; i++){
 	if(b%2 == 1){
-	ab = (ab + za*b%2) mod p;
-	za = 2*za mod p; 
-        b = b/2; 
+	ab = (ab +(za*(b%2)))%p;
 	}
-	 
+	b = b/2;	 
+	za = (2*za)%p;  
+
 }
    return ab; 
 }
@@ -31,29 +46,29 @@ unsigned int modprod(unsigned int a, unsigned int b, unsigned int p) {
 //compute a^b mod p safely
 unsigned int modExp(unsigned int a, unsigned int b, unsigned int p) {
   /* Q1.3: Complete this function */
-z = a;
+int z = a;
 int aExpb = 1;
 //finds the number of times b divides into 2
 int n = 0; 
 int storeB = b;
 while(storeB != 0){
    storeB = storeB/2;
-   n++; 
+   n= n+1; 
 }
 //Calculates using the steps I got from the other loop 
   for(int i = 0; i<n; i++){
 	if(b%2 == 1){
 		aExpb = modProd(aExpb, z, p);
-		z = modProd(z, z, p)
-}
+	}
+        b = b/2;
+        z = modProd(z,z,p);
 }
 return aExpb; 
 }
 
 
+ 
 
-} 
-}
 
 //returns either 0 or 1 randomly
 unsigned int randomBit() {
@@ -106,13 +121,18 @@ unsigned int isProbablyPrime(unsigned int N) {
   //if we're testing a large number switch to Miller-Rabin primality test
   /* Q2.1: Complete this part of the isProbablyPrime function using the Miller-Rabin pseudo-code */
   unsigned int r,d;
-  if(n%2 == 0){
-       N-1 = (pow(2, r))*d;
-}
+  //solve for r and d
+  int m = N-1;
+  while(m%2 == 0){
+      r = r+1;
+      m = m%2;
+  }
+  int newR = pow(2, r);
+  d = m/newR;
   for (unsigned int n=0;n<NsmallPrimes;n++) {
- 	x = modExp(n, d, N);
+       int x = modExp(smallPrimeList[n], d, N);
         	if(x == 1 || x == N-1){
-			n++;
+			continue;
 		} 
 		for(int i = 1; i<r; i++){
 			x = modProd( x, x, N);
@@ -120,7 +140,7 @@ unsigned int isProbablyPrime(unsigned int N) {
 				return 0; 
 			}
 			if(x == N-1){
-				n++;
+				continue;
 			}
 		}
 	return 0;

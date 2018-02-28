@@ -31,9 +31,9 @@ int main (int argc, char **argv) {
   int p;
 
   /* Q2.2: Use isProbablyPrime and randomXbitInt to find a random n-bit prime number */ 
-  p = randomXbitInt(n);
+  p = randXbitInt(n);
   while(!isProbablyPrime(p)){
-	p = randomXbitInt(n);
+	p = randXbitInt(n);
   }	  
   printf("p = %u is probably prime.\n", p);
 
