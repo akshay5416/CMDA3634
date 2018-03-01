@@ -4,21 +4,6 @@
 
 #include "functions.h"
 
-unsigned int modProd(unsigned int a, unsigned int b, unsigned int p);
-unsigned int modExp(unsigned int a, unsigned int b, unsigned int p); 
-unsigned int isProbablyPrime(unsigned int N);
-
-
-int main(int argc, char **argv){
-
- int a = modProd(26, 13, 7);//2
- int b = modExp(7, 6, 21);//7
- int c = isProbablyPrime(37);
- printf("This is modProd: %d ",a);
- printf("This is modExp: %d", b);
- printf("This is isProbablyPrime: %d", c); 
-
-}
 //compute a*b mod p safely
 unsigned int modProd(unsigned int a, unsigned int b, unsigned int p) {
   /* Q1.2: Complete this function */
@@ -87,7 +72,7 @@ unsigned int randXbitInt(unsigned int n) {
 //tests for primality and return 1 if N is probably prime and 0 if N is composite
 unsigned int isProbablyPrime(unsigned int N) {
 
-  if (N%2==2) return 0; //not interested in even numbers (including 2)
+  if (N%2==0) return 0; //not interested in even numbers (including 2)
 
   unsigned int NsmallPrimes = 168;
   unsigned int smallPrimeList[168] = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 
@@ -151,4 +136,18 @@ unsigned int isProbablyPrime(unsigned int N) {
 //Finds a generator of Z_p using the assumption that p=2*q+1
 unsigned int findGenerator(unsigned int p) {
   /* Q3.3: complete this function and use the fact that p=2*q+1 to quickly find a generator */
+	//Sets up counter	  
+        int q = (p - 1)/2;
+        int g=0;
+        for(int i = 2; i<p; i++){
+	    if(((int)pow(i,2)%p != 1) && ((int)pow(i,q)%p != 1)){
+                g = i;
+                break; 
+	}
+        }
+        
+	return g; 
+
+	  
+       
 }
