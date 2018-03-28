@@ -58,21 +58,33 @@ int main (int argc, char **argv) {
      distributed amounst the MPI ranks  */
   unsigned int N = p-1; //total loop size
   unsigned int start, end;
-  if(rank == 0){
-   start = 0; 
-   end = start + N;
-  }
-  if(rank == 1){
-   start = end; 
-   end = N +1;
-  }
 
+   //This divides the number of start and end   
+  // start = (N)/(size) * (rank);
+  // end = (N)/(size) + start;
+   
+   if(rank < N%size){
+      start = (N)/(size) * (rank) + rank; 
+      end = (N)/(size) + start + rank + 1;
+   }
+   else{ 
+      start = (N)/(size) * (rank);
+      end = (N)/(size) + start;
+  }
+   
+  
+  MPI_Barrier(MPI_COMM_WORLD);
+  int startTime = MPI_Wtime();
   //loop through the values from 'start' to 'end'
   for (unsigned int i=start;i<end;i++) {
     if (modExp(g,i+1,p)==h)
       printf("Secret key found! x = %u \n", i+1);
   }
-
+  int endTime = MPI_Wtime();
+  int runTime = MPI_Wtime() - startTime;
+  int throughPut = N/(runTime); 
+  printf("This is the runTime for the rank: %u \n ", runTime);
+  printf("This is the Throughput for the program: %u \n", throughPut); 
   MPI_Finalize();
 
   return 0;
