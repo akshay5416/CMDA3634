@@ -86,6 +86,6 @@ int main (int argc, char **argv) {
   printf("This is the runTime for the rank: %f \n ", runTime);
   printf("This is the Throughput for the program:%f \n", throughPut); 
   MPI_Finalize();
-
+//Explained in document on how problems in new river could not be fixed in time. 
   return 0;
 }
