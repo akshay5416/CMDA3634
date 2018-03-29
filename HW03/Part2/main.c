@@ -25,9 +25,9 @@ int main (int argc, char **argv) {
 
   /* Q3.1 Make rank 0 setup the ELGamal system and
     broadcast the public key information */
-  printf("Enter a number of bits: "); fflush(stdout);
-  char status = scanf("%u",&n);
-
+    printf("Enter a number of bits: "); fflush(stdout);
+    char status = scanf("%u",&n);
+   // n = 10;
   //make sure the input makes sense
   if ((n<3)||(n>31)) {//Updated bounds. 2 is no good, 31 is actually ok
     printf("Unsupported bit size.\n");
@@ -65,7 +65,7 @@ int main (int argc, char **argv) {
    
    if(rank < N%size){
       start = (N)/(size) * (rank) + rank; 
-      end = (N)/(size) + start + rank + 1;
+      end = (N)/(size) * (rank + 1) + start;
    }
    else{ 
       start = (N)/(size) * (rank);
@@ -74,17 +74,17 @@ int main (int argc, char **argv) {
    
   
   MPI_Barrier(MPI_COMM_WORLD);
-  int startTime = MPI_Wtime();
+  double startTime = MPI_Wtime();
   //loop through the values from 'start' to 'end'
   for (unsigned int i=start;i<end;i++) {
     if (modExp(g,i+1,p)==h)
       printf("Secret key found! x = %u \n", i+1);
   }
-  int endTime = MPI_Wtime();
-  int runTime = MPI_Wtime() - startTime;
-  int throughPut = N/(runTime); 
-  printf("This is the runTime for the rank: %u \n ", runTime);
-  printf("This is the Throughput for the program: %u \n", throughPut); 
+  double endTime = MPI_Wtime();
+  double runTime = MPI_Wtime() - startTime;
+  double throughPut = N/(runTime); 
+  printf("This is the runTime for the rank: %f \n ", runTime);
+  printf("This is the Throughput for the program:%f \n", throughPut); 
   MPI_Finalize();
 
   return 0;
