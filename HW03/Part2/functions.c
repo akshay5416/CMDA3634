@@ -129,7 +129,7 @@ void setupElGamal(unsigned int n, unsigned int *p, unsigned int *g,
      }
      *g = findGenerator(*p); 
       int tempx = randXbitInt(n)%*p;
-      x = &tempx;
+      *x = tempx;
       *h = modExp(*g, *x, *p);  
   
 
@@ -155,8 +155,8 @@ void ElGamalDecrypt(unsigned int *m, unsigned int a,
                     unsigned int p, unsigned int x) {
 
   /* implement the decryption routine for an ElGamal cryptographic system */
-  int s = modExp(a, x, p); 
-  int sinverse = modExp(s, p-2, p); 
+  unsigned int s = modExp(a, x, p); 
+  unsigned int sinverse = modExp(s, p-2, p); 
   *m = modprod(*m, sinverse, p); 
   
 }

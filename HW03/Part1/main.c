@@ -54,7 +54,6 @@ int main (int argc, char **argv) {
   //my code starts
   MPI_Bcast(&p, 1, MPI_INT, 0, MPI_COMM_WORLD);
   MPI_Bcast(&g, 1, MPI_INT, 0, MPI_COMM_WORLD);
-  MPI_Bcast(&x, 1, MPI_INT, 0, MPI_COMM_WORLD);
   MPI_Bcast(&h, 1, MPI_INT, 0, MPI_COMM_WORLD);
  
   //make an array of messages to send/recv
@@ -67,7 +66,7 @@ int main (int argc, char **argv) {
   //storage for extra encryption coefficient 
   unsigned int *a = 
       (unsigned int *) malloc(Nmessages*sizeof(unsigned int)); 
-
+  if(rank == 1){
   //fill the messages with random elements of Z_p
   printf("Bob's original messages are:    [ ");
   for (unsigned int i=0;i<Nmessages;i++) {
@@ -76,7 +75,7 @@ int main (int argc, char **argv) {
     
   }
   printf("]\n");
-  if(rank == 1){
+  
   //Encrypt the message with rank 0's ElGamal cyrptographic system
   printf("Bob's encrypted messages are:   [ ");
   for (unsigned int i=0;i<Nmessages;i++) {
@@ -85,22 +84,21 @@ int main (int argc, char **argv) {
     printf("(%u,%u) ", message[i], a[i]);
   }
   printf("]\n");
-  //my code starts
-  //MPI_Bcast(&p, 1, MPI_INT, 0, MPI_COMM_WORLD);
-  //MPI_Bcast(&g, 1, MPI_INT, 0, MPI_COMM_WORLD);
-  //MPI_Bcast(&x, 1, MPI_INT, 0, MPI_COMM_WORLD);
-  //MPI_Bcast(&h, 1, MPI_INT, 0, MPI_COMM_WORLD); 
+  //my code starts 
 
   /* Q2.3 Have only Bob populate messages and then
     send all the encrypted mesages to Alice (rank 0) */
    int tag = 1; 
-   MPI_Send(&Nmessages, 32, MPI_INT,0 , tag, MPI_COMM_WORLD);
+   MPI_Send(message, Nmessages , MPI_UNSIGNED,0 , tag, MPI_COMM_WORLD);
+   MPI_Send(a, Nmessages, MPI_UNSIGNED, 0, tag, MPI_COMM_WORLD);
 }
   /* Q2.3 Have Alice recv all the encrypted mesages 
     from Bob (rank 1) and then decrypt them */
   if(rank == 0){
+  int tag = 1; 
   MPI_Status status; 
-  MPI_Recv(&Nmessages, 32, MPI_INT,1, tag, MPI_COMM_WORLD,&status);  
+  MPI_Recv(message, Nmessages, MPI_UNSIGNED,1, tag, MPI_COMM_WORLD,&status);
+  MPI_Recv(a, Nmessages, MPI_UNSIGNED, 1, tag, MPI_COMM_WORLD,&status);  
 
   printf("Alice's recieved messages are:  [ ");
   for (unsigned int i=0;i<Nmessages;i++) {
