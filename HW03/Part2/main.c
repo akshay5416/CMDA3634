@@ -25,9 +25,9 @@ int main (int argc, char **argv) {
 
   /* Q3.1 Make rank 0 setup the ELGamal system and
     broadcast the public key information */
-    printf("Enter a number of bits: "); fflush(stdout);
-    char status = scanf("%u",&n);
-   // n = 10;
+   // printf("Enter a number of bits: "); fflush(stdout);
+   // char status = scanf("%u",&n);
+    n = 10;
   //make sure the input makes sense
   if ((n<3)||(n>31)) {//Updated bounds. 2 is no good, 31 is actually ok
     printf("Unsupported bit size.\n");
@@ -64,8 +64,8 @@ int main (int argc, char **argv) {
   // end = (N)/(size) + start;
    
    if(rank < N%size){
-      start = (N)/(size) * (rank) + rank; 
-      end = (N)/(size) * (rank + 1) + start;
+      start =((N)/(size) * (rank)) + rank; 
+      end = ((N)/(size) + (rank + 1)) + rank;
    }
    else{ 
       start = (N)/(size) * (rank);
