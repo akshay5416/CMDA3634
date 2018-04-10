@@ -216,21 +216,21 @@ void convertStringToZ(unsigned char *string, unsigned int Nchars,
      if(Nchars/Nints == 2){
      	for(int i = 0; i<strlen(string); i++){
            Z[i] = (int)string[i];
+           unsigned int first = string[0+a];
+           unsigned int second = string[1+a]; 
+           unsigned int total = first + (second*256); 
         }
-        unsigned int first = string[0];
-        unsigned int second = string[1];
-        unsigned int total = first + (second*256);
         a = a +2; 
      }
      unsigned int b = 0;
      if(Nchars/Nints == 3){
      	for(int i = 0; i<strlen(string); i++){
 		Z[i] = (int)string[i];
+                unsigned int first = string[0+b];
+                unsigned int second = string[1+b];
+                unsigned int third = string[2+b];
+                unsigned int total = first + (second*256) + (third*256*256);
         }
-        unsigned int first = string[0];
-        unsigned int second = string[1];
-        unsigned int third = string[2];
-        unsigned int total = first + (second*256) + (third*256*256);
         b = b + 3; 
      }
   /* Q2.2 Parallelize this function with OpenMP   */
@@ -240,8 +240,20 @@ void convertStringToZ(unsigned char *string, unsigned int Nchars,
 
 void convertZToString(unsigned int  *Z,      unsigned int Nints,
                       unsigned char *string, unsigned int Nchars) {
-
+   
   /* Q1.4 Complete this function   */
+     if(Nints/Nchars == 1){
+ 	for(int i = 0; i<strlen(string); i++){
+		string[i] = (char)N[i];
+	}
+     }
+     unsigned int a = 0; 
+     if(Nints/Nchars == 2){
+	for(int i = 0; i <strlen(string); i++){
+		string[i] = (char)N[i];
+        }
+
+     }
   /* Q2.2 Parallelize this function with OpenMP   */
 
 }
