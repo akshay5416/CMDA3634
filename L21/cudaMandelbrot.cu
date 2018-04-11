@@ -91,16 +91,13 @@ int main(int argc, char **argv){
   int Nre = atoi(argv[1]);
   int Nim = atoi(argv[2]);
   int Nthreads = atoi(argv[3]);
- // int Nthreads = Nre * Nim; 
-  int Nblocks = (N+Nthreads -1)/Nthreads; 
-
   // Q2b: set the number of threads per block and the number of blocks here:
   float *d_a;
   cudaMalloc(&d_a, Nre*sizeof(float));
   float Bx = Nthreads;
   float By = Nthreads;
   float Gx = (Nre+Bx-1)/Bx; 
-  float Gy = (Nre+By-1)/By;
+  float Gy = (Nim+By-1)/By;
   dim3 B(Bx,By,1); //Bx*By threads in thread block 
   dim3 G(Gx, Gy,1); //Gx*Gy grid of thread blocks
 
@@ -109,7 +106,8 @@ int main(int argc, char **argv){
 
   // storage for the iteration counts
   float *count = (float*) malloc(Nre*Nim*sizeof(float));
-
+  float *new_count;
+  cudaMalloc(&new_count, Nre*Nim*sizeof(float));
   // Parameters for a bounding box for "c" that generates an interesting image
   const float centRe = -.759856, centIm= .125547;
   const float diam  = 0.151579;

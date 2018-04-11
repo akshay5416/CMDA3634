@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include "functions.h"
+#include "omp.h"
 
 //compute a*b mod p safely
 unsigned int modprod(unsigned int a, unsigned int b, unsigned int p) {
@@ -152,7 +153,7 @@ void ElGamalEncrypt(unsigned int *m, unsigned int *a, unsigned int Nints,
                     unsigned int p, unsigned int g, unsigned int h) {
 
   /* Q2.1 Parallelize this function with OpenMP   */
-
+  #pragma omp parallel for
   for (unsigned int i=0; i<Nints;i++) {
     //pick y in Z_p randomly
     unsigned int y;
@@ -175,7 +176,7 @@ void ElGamalDecrypt(unsigned int *m, unsigned int *a, unsigned int Nints,
                     unsigned int p, unsigned int x) {
 
   /* Q2.1 Parallelize this function with OpenMP   */
-
+  #pragma omp parallel for
   for (unsigned int i=0; i<Nints;i++) {
     //compute s = a^x
     unsigned int s = modExp(a[i],x,p);
@@ -209,7 +210,8 @@ void padString(unsigned char* string, unsigned int charsPerInt) {
 
 void convertStringToZ(unsigned char *string, unsigned int Nchars,
                       unsigned int  *Z,      unsigned int Nints) {
-
+  #pragma omp parallel
+  {
   /* Q1.3 Complete this function   */
      //find the ratio of the 1
      if(Nchars/Nints == 1){
@@ -241,13 +243,14 @@ void convertStringToZ(unsigned char *string, unsigned int Nchars,
        
      }
   /* Q2.2 Parallelize this function with OpenMP   */
-
+     }
 }
 
 
 void convertZToString(unsigned int  *Z,      unsigned int Nints,
                       unsigned char *string, unsigned int Nchars) {
-   
+  #pragma omp parallel
+  { 
   /* Q1.4 Complete this function   */
      if(Nints/Nchars == 1){
  	for(int i = 0; i<strlen(string); i++){
@@ -285,5 +288,6 @@ void convertZToString(unsigned int  *Z,      unsigned int Nints,
         }
 	 
 	}
+     }
 }
 
