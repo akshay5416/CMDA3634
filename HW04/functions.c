@@ -196,9 +196,14 @@ void padString(unsigned char* string, unsigned int charsPerInt) {
   
   unsigned int length = strlen(string); 
   while(length%charsPerInt != 0){
-     strcat(string, " ");
-       
+       realloc(string, (length+1)*sizeof(unsigned char));
+       length++;
+       string[length-1] = '\0';
+       string[length-2] = ' ';
+    //strcat(string, " ");
+//	string[length-1] = ' ';       
   }
+       // string[length + 1] = '\0'; 
 }
 
 
@@ -215,23 +220,25 @@ void convertStringToZ(unsigned char *string, unsigned int Nchars,
      unsigned int a = 0;
      if(Nchars/Nints == 2){
      	for(int i = 0; i<strlen(string); i++){
-           Z[i] = (int)string[i];
+          // Z[i] = (int)string[i];
            unsigned int first = string[0+a];
            unsigned int second = string[1+a]; 
-           unsigned int total = first + (second*256); 
+           Z[i] = first + (second*256);
+           a = a + 2; 
         }
-        a = a +2; 
+        
      }
      unsigned int b = 0;
      if(Nchars/Nints == 3){
      	for(int i = 0; i<strlen(string); i++){
-		Z[i] = (int)string[i];
+		//Z[i] = (int)string[i];
                 unsigned int first = string[0+b];
                 unsigned int second = string[1+b];
                 unsigned int third = string[2+b];
-                unsigned int total = first + (second*256) + (third*256*256);
+                Z[i] = first + (second*256) + (third*256*256);
+                b = b + 3; 
         }
-        b = b + 3; 
+       
      }
   /* Q2.2 Parallelize this function with OpenMP   */
 
@@ -244,17 +251,39 @@ void convertZToString(unsigned int  *Z,      unsigned int Nints,
   /* Q1.4 Complete this function   */
      if(Nints/Nchars == 1){
  	for(int i = 0; i<strlen(string); i++){
-		string[i] = (char)N[i];
+		string[i] = (char)Z[i];
 	}
      }
      unsigned int a = 0; 
      if(Nints/Nchars == 2){
 	for(int i = 0; i <strlen(string); i++){
-		string[i] = (char)N[i];
+		//string[i] = (char)Z[i];
+                unsigned char first = Z[i]%256;
+                unsigned char second = (Z[i] - first)/256;
+		string[0+a] = first;
+		string[1+a] = second;
+                //unsigned char first = Z[0+a];
+                //unsigned char second = Z[1+a];
+               // string  = first + second;  
+		a = a + 2;
         }
-
+        
      }
-  /* Q2.2 Parallelize this function with OpenMP   */
 
+  /* Q2.2 Parallelize this function with OpenMP   */
+     unsigned int b = 0;
+     if(Nints/Nchars == 3){
+	for(int i = 0; i < strlen(string); i++){
+	        //string[i] = (char)Z[i];
+		unsigned char first = (Z[i]%256);
+		unsigned char second = (Z[i]-first)%(256*256);
+		unsigned char third = (Z[i]- first - second)/(256 * 256);
+		string[0+b] = first; 
+		string[1+b] = second; 
+		string[2+b] = third; 
+		b = b + 3;
+        }
+	 
+	}
 }
 
