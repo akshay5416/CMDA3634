@@ -1,0 +1,13 @@
+gcc -I./. -O3 -g -fopenmp -o main.o -lm -c main.c
+gcc -I./. -O3 -g -fopenmp -o functions.o -lm -c functions.c
+functions.c: In function 'padString':
+functions.c:200:8: warning: ignoring return value of 'realloc', declared with attribute warn_unused_result [-Wunused-result]
+        realloc(string, (length+1)*sizeof(unsigned char));
+        ^
+gcc  ././main.o ././functions.o -I./. -O3 -g -fopenmp -o main -lm
+Enter a number of bits: Unsupported bit size.
+Enter a number of bits: Unsupported bit size.
+Enter a number of bits: Unsupported bit size.
+Enter a number of bits: Unsupported bit size.
+Enter a number of bits: Unsupported bit size.
+Enter a number of bits: Unsupported bit size.
