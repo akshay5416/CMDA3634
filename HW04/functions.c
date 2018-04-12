@@ -199,12 +199,13 @@ void padString(unsigned char* string, unsigned int charsPerInt) {
   while(length%charsPerInt != 0){
        realloc(string, (length+1)*sizeof(unsigned char));
        length++;
-       string[length-1] = '\0';
-       string[length-2] = ' ';
+       string[length] = '\0';
+       string[length-1] = ' ';
+       //string[length] = '\0 ';
     //strcat(string, " ");
-//	string[length-1] = ' ';       
+	//string[length-1] = ' ';       
   }
-       // string[length + 1] = '\0'; 
+      // string[length+1] = '\0'; 
 }
 
 
