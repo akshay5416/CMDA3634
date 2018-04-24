@@ -27,7 +27,7 @@ int main (int argc, char **argv) {
 
   printf("Enter a number of bits: "); fflush(stdout);
   //char status = scanf("%u",&n);
-  n = 18;
+  n = 31;
 
   //make sure the input makes sense
   if ((n<8)||(n>31)) {//Updated bounds. 8 is no good (need to encode chars)
@@ -76,12 +76,16 @@ int main (int argc, char **argv) {
   printf("]\n");
 
   //Decrypt the Zmessage with the ElGamal cyrptographic system
+  double decryptstartTime = clock();
   ElGamalDecrypt(Zmessage,a,Nints,p,x);
 
   convertZToString(Zmessage, Nints, message, Nchars);
 
   printf("Decrypted Message = \"%s\"\n", message);
   printf("\n");
+  double decryptendTime = clock();
+  double decrypttotalTime = decryptendTime - decryptstartTime; 
+  printf("Time it took to decrypt : %d", decrypttotalTime);
 
 
   //Suppose we don't know the secret key. Use OpenMP threads to try and find it in parallel
