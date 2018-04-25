@@ -28,25 +28,32 @@ int main (int argc, char **argv) {
   /* Q2 Complete this function. Read in the public key data from public_key.txt,
     convert the string to elements of Z_p, encrypt them, and write the cyphertexts to 
     message.txt */
-  FILE *file; 
+  FILE* file; 
   file = fopen("public_key.txt", "r");
-  fscanf("%d\n", &n);
-  fscanf("%d\n", &p);
-  fscanf("%d\n", &g);
-  fscanf("%d\n", &h);
-  unsigned int *m = malloc(sizeof(unsigned int));
-  unsigned int *a = malloc(sizeof(unsigned int));
-  unsigned int charsPerInt = (n-1)/8;
-  unsigned int Nints = strlen(message)/charsPerInt;
-  ElGamalEncrypt(m, a, Nints, p, g, h);
+  fscanf(file,"%d\n", &n); 
+  fscanf(file,"%d\n", &p);
+  fscanf(file,"%d\n", &g);
+  fscanf(file,"%d\n", &h);
   fclose(file);
+  unsigned int charsPerInt = (n-1)/8;
+  padString(message, charsPerInt);
+  unsigned int Nints = strlen(message)/charsPerInt;
+  unsigned int Nchars = strlen(message);
+  unsigned int *Z = malloc(Nints*sizeof(unsigned int));
+  unsigned int *Zmessage = (unsigned int *) malloc(Nints*sizeof(unsigned int));
+  convertStringToZ(message, Nchars, Zmessage, Nints);
+  unsigned int *a = malloc(sizeof(unsigned int));
+ // unsigned int charsPerInt = (n-1)/8;
+ // unsigned int Nints = strlen(message)/charsPerInt;
+  ElGamalEncrypt(Zmessage, a, Nints, p, g, h);
+ 
 
- FILE *filem; 
+ FILE* filem; 
  filem = fopen("messages.txt", "w");
- fprintf(filem, n); 
- for(int i = 0; i<n; i++){
- 	fprintf(filem, "%d %d\n", m[i], a[i]);
+ fprintf(filem,"%u\n" ,Nints); 
+ for(int i = 0; i<Nints; i++){
+ 	fprintf(filem, "%u %u\n", Zmessage[i], a[i]);
 } 
-  
+ 
   return 0;
 }

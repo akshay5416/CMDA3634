@@ -174,7 +174,7 @@ void ElGamalDecrypt(unsigned int *m, unsigned int *a, unsigned int Nints,
                     unsigned int p, unsigned int x) {
 
   for (unsigned int i=0; i<Nints;i++) {
-    //compute s = a^x
+    //compute s = a^x 
     unsigned int s = modExp(a[i],x,p);
 
     //compute s^{-1} = s^{p-2}
