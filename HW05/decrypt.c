@@ -6,7 +6,7 @@
 
 #include "functions.h"
 
-
+//trying to fix git stuff
 int main (int argc, char **argv) {
 
   //declare storage for an ElGamal cryptosytem
