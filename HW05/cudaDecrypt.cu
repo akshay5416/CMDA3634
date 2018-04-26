@@ -59,7 +59,7 @@ __global__ void int findSecretKey(unsigned int g, unsigned int p, unsigned int h
 
    // printf("Searching all keys took %g seconds, throughput was %g values tested per second.\n", totalTime, throughput);
   }
-}
+
 
 
 int main (int argc, char **argv) {
@@ -134,13 +134,13 @@ int main (int argc, char **argv) {
 
   double deviceStart = clock();
 
-  float *h_a = (float*) malloc(N*sizeof(float));
+  float *h_a = (float*) malloc(sizeof(float));
   float *d_a; 
   cudaMalloc(&d_a, Nthreads*sizeof(float));
 
   cudaMemcpy(d_a,h_a,Nthreads*sizeof(float),cudaMemcpyHostToDevice);  
   
-  findSecretKey<<< G,B >>> (g, p, h, pminusone, *d_a)
+  findSecretKey<<< G,B >>> (g, p, h,*d_a);
   cudaDeviceSynchronize();
 
   double deviceEnd = clock();
@@ -149,8 +149,8 @@ int main (int argc, char **argv) {
    cudaMemcpy(h_a,d_a, Nthreads*sizeof(float), cudaMemcpyDeviceToHost);
 
   printf("The secret key is %f\n ", h_a);
-  printf("The device took %f seconds to add a and b \n", deviceTime); 
-  printf("The effective bandwith of the device was % GB/s\n", totalMem/(1E9*deviceTime));
+ // printf("The device took %f seconds to add a and b \n", deviceTime); 
+ // printf("The effective bandwith of the device was % GB/s\n", totalMem/(1E9*deviceTime));
   
   cudaFree(d_a);
   free(h_a);
