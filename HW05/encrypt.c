@@ -8,7 +8,7 @@
 
 int main (int argc, char **argv) {
 
-	//seed value for the randomizer 
+   //seed value for the randomizer 
   double seed = clock(); //this will make your program run differently everytime
   //double seed = 0; //uncomment this and your program will behave the same everytime it's run
 
