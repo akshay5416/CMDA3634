@@ -141,11 +141,11 @@ int main (int argc, char **argv) {
 
   double deviceStart = clock();
 
-  float *h_a = (float*) malloc(sizeof(float));
-  float *d_a; 
-  cudaMalloc(&d_a, Nthreads*sizeof(float));
+  unsigned int  *h_a = (unsigned int *) malloc(sizeof(unsigned int));
+  unsigned int *d_a; 
+  cudaMalloc(&d_a, Nthreads*sizeof(unsigned int));
 
-  cudaMemcpy(d_a,h_a,Nthreads*sizeof(float),cudaMemcpyHostToDevice);  
+  cudaMemcpy(d_a,h_a,Nthreads*sizeof(unsigned int),cudaMemcpyHostToDevice);  
   
   findSecretKey<<< G,B >>> (g, p, h,*d_a);
   cudaDeviceSynchronize();
@@ -153,11 +153,11 @@ int main (int argc, char **argv) {
   double deviceEnd = clock();
   double deviceTime = (deviceEnd-deviceStart)/(double) CLOCKS_PER_SEC;
   
-   cudaMemcpy(h_a,d_a, Nthreads*sizeof(float), cudaMemcpyDeviceToHost);
+  cudaMemcpy(h_a,d_a, Nthreads*sizeof(unsigned int), cudaMemcpyDeviceToHost);
 
-  printf("The secret key is %f\n ", h_a);
+  printf("The secret key is %u\n ", h_a);
  // printf("The device took %f seconds to add a and b \n", deviceTime); 
- // printf("The effective bandwith of the device was % GB/s\n", totalMem/(1E9*deviceTime));
+ // printf("The effective band:with of the device was % GB/s\n", totalMem/(1E9*deviceTime));
   
   cudaFree(d_a);
   free(h_a);
