@@ -27,28 +27,27 @@ __device__ unsigned int modExponential(unsigned int a, unsigned int b, unsigned 
   unsigned int aExpb = 1;
 
   while (b > 0) {
-    if (b%2 == 1) aExpb = modprod(aExpb, z, p);
-    z = modprod(z, z, p);
+    if (b%2 == 1) aExpb = modProd(aExpb, z, p);
+    z = modProd(z, z, p);
     b /= 2;
   }
   return aExpb;
 }
 
 // find the secret key
-__global__ void int findSecretKey(unsigned int g, unsigned int p, unsigned int h, unsigned int *d_a){
+__global__ void findSecretKey(unsigned int g, unsigned int p, unsigned int h, unsigned int *d_a){
   int thread = threadIdx.x;
   int block  = blockIdx.x;
   int blockSize = blockDim.x;
-  int gridSize  = gridDim.x;
 
   //unique global thread ID
   int id = thread + block*blockSize;
 
- if (id < p-1) {  
+ if (id < p) {  
    // for (unsigned int i=0;i<p-1;i++) {
       if (modExponential(g, id,p)==h) {
        //iintf("Secret key found! x = %u \n", i+1);
-        d_a=id+1;
+        *d_a=id;
       }
     }
    // double endTime = clock();
@@ -80,11 +79,11 @@ int main (int argc, char **argv) {
   /* Q3 Complete this function. Read in the public key data from public_key.txt
     and the cyphertexts from messages.txt. */
       int bufferSize = 1024;
-      unsigned char *message = (unsigned char *) malloc(bufferSize*sizeof(unsigned char));
+    /*  unsigned char *message = (unsigned char *) malloc(bufferSize*sizeof(unsigned char));
       unsigned int charsPerInt = (n-1)/8 ;
-      unsigned int Nchars = strlen(message);
-      Nints = strlen(message)/charsPerInt;
-
+      unsigned int Nchars = mystrlen(message);
+      Nints = mystrlen(message)/charsPerInt;
+*/
 
     FILE* file;
     file = fopen("public_key.txt", "r");
@@ -98,6 +97,11 @@ int main (int argc, char **argv) {
     file2 = fopen("messages.txt", "r");
     unsigned int count;
     fscanf(file2,"%u\n", &count);
+
+    unsigned int charsPerInt = (n-1)/8;
+    unsigned int Nchars = Nints * charsPerInt;
+    Nints = count;
+
     unsigned int *Zmessage = (unsigned int *) malloc(Nints*sizeof(unsigned int));
     unsigned int *a = (unsigned int *) malloc(Nints*sizeof(unsigned int));
     for(int i = 0; i<count; i++){
@@ -136,18 +140,16 @@ int main (int argc, char **argv) {
 
 /* Q4 Make the search for the secret key parallel on the GPU using CUDA. */
   int Nthreads = 32; 
-  dim3 B(32, 1, 1);
-  dim3 G((p-1+32)/32,1,1);
+  int G = ((int)(p-1)+Nthreads)/Nthreads;
 
   double deviceStart = clock();
 
-  unsigned int  *h_a = (unsigned int *) malloc(sizeof(unsigned int));
+  unsigned int *h_a = (unsigned int *) malloc(sizeof(unsigned int));
   unsigned int *d_a; 
   cudaMalloc(&d_a, Nthreads*sizeof(unsigned int));
 
-  cudaMemcpy(d_a,h_a,Nthreads*sizeof(unsigned int),cudaMemcpyHostToDevice);  
   
-  findSecretKey<<< G,B >>> (g, p, h,*d_a);
+  findSecretKey<<< G,Nthreads >>> (g, p, h,d_a);
   cudaDeviceSynchronize();
 
   double deviceEnd = clock();
@@ -156,10 +158,11 @@ int main (int argc, char **argv) {
   cudaMemcpy(h_a,d_a, Nthreads*sizeof(unsigned int), cudaMemcpyDeviceToHost);
 
   printf("The secret key is %u\n ", h_a);
- // printf("The device took %f seconds to add a and b \n", deviceTime); 
+  printf("The device took %d seconds to find the secret key \n", deviceTime); 
  // printf("The effective band:with of the device was % GB/s\n", totalMem/(1E9*deviceTime));
   
   cudaFree(d_a);
   free(h_a);
+
   return 0;
 }
