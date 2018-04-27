@@ -99,11 +99,10 @@ int main (int argc, char **argv) {
     fscanf(file2,"%u\n", &count);
 
     unsigned int charsPerInt = (n-1)/8;
-    unsigned int Nchars = Nints * charsPerInt;
-    Nints = count;
+    unsigned int Nchars = count * charsPerInt;
 
-    unsigned int *Zmessage = (unsigned int *) malloc(Nints*sizeof(unsigned int));
-    unsigned int *a = (unsigned int *) malloc(Nints*sizeof(unsigned int));
+    unsigned int *Zmessage = (unsigned int *) malloc(count*sizeof(unsigned int));
+    unsigned int *a = (unsigned int *) malloc(count*sizeof(unsigned int));
     for(int i = 0; i<count; i++){
         fscanf(file2, "%u %u\n", &Zmessage[i], &a[i]);
     }
@@ -129,7 +128,7 @@ int main (int argc, char **argv) {
     
     /* Q3 After finding the secret key, decrypt the message */
  // int bufferSize = 1024;
- // unsigned char *message = (unsigned char *) malloc(bufferSize*sizeof(unsigned char));
+  unsigned char *message = (unsigned char *) malloc(bufferSize*sizeof(unsigned char));
  // unsigned int charsPerInt = (n-1)/8 ;
  // unsigned int Nchars = strlen(message);
  // Nints = strlen(message)/charsPerInt;
