@@ -112,16 +112,16 @@ int main (int argc, char **argv) {
      // if (modExp(g,i+1,p)==h) {
        // printf("Secret key found! x = %u \n", i+1);
        // x=i+1;
-      }
-    }
+     // }
+   // }
    // double endTime = clock();
 
    // double totalTime = (endTime-startTime)/CLOCKS_PER_SEC;
     //double work = (double) p;
    // double throughput = work/totalTime;
 
-    printf("Searching all keys took %g seconds, throughput was %g values tested per second.\n", totalTime, throughput);
-  }
+   // printf("Searching all keys took %g seconds, throughput was %g values tested per second.\n", totalTime, throughput);
+  //}
     
     /* Q3 After finding the secret key, decrypt the message */
  // int bufferSize = 1024;
