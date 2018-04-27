@@ -43,11 +43,11 @@ __global__ void findSecretKey(unsigned int g, unsigned int p, unsigned int h, un
   //unique global thread ID
   int id = thread + block*blockSize;
 
- if (id < p) {  
+ if (id < p-1) {  
    // for (unsigned int i=0;i<p-1;i++) {
       if (modExponential(g, id,p)==h) {
        //iintf("Secret key found! x = %u \n", i+1);
-        *d_a=id;
+        *d_a=id-1;
       }
     }
    // double endTime = clock();
@@ -79,13 +79,10 @@ int main (int argc, char **argv) {
   /* Q3 Complete this function. Read in the public key data from public_key.txt
     and the cyphertexts from messages.txt. */
       int bufferSize = 1024;
-    /*  unsigned char *message = (unsigned char *) malloc(bufferSize*sizeof(unsigned char));
+     unsigned char *message = (unsigned char *) malloc(bufferSize*sizeof(unsigned char));
       unsigned int charsPerInt = (n-1)/8 ;
       unsigned int Nchars = mystrlen(message);
       Nints = mystrlen(message)/charsPerInt;
-*/
-
-
 
     FILE* file;
     file = fopen("public_key.txt", "r");
@@ -100,12 +97,11 @@ int main (int argc, char **argv) {
     unsigned int count;
     fscanf(file2,"%u\n", &count);
 
-    unsigned int charsPerInt = (n-1)/8;
-    unsigned int Nchars = count * charsPerInt;
+    u
 
-    unsigned int *Zmessage = (unsigned int *) malloc(count*sizeof(unsigned int));
+    unsigned int *Zmessage = (unsigned int *) malloc(Nints*sizeof(unsigned int));
     unsigned int *a = (unsigned int *) malloc(count*sizeof(unsigned int));
-    for(int i = 0; i<count; i++){
+    for(int i = 0; i<Nints; i++){
         fscanf(file2, "%u %u\n", &Zmessage[i], &a[i]);
     }
     fclose(file2);
@@ -130,7 +126,7 @@ int main (int argc, char **argv) {
     
     /* Q3 After finding the secret key, decrypt the message */
  // int bufferSize = 1024;
-  unsigned char *message = (unsigned char *) malloc(bufferSize*sizeof(unsigned char));
+ // unsigned char *message = (unsigned char *) malloc(bufferSize*sizeof(unsigned char));
  // unsigned int charsPerInt = (n-1)/8 ;
  // unsigned int Nchars = strlen(message);
  // Nints = strlen(message)/charsPerInt;
@@ -140,8 +136,9 @@ int main (int argc, char **argv) {
   printf("Decrypted Message = %s\n", message);
 
 /* Q4 Make the search for the secret key parallel on the GPU using CUDA. */
-  int Nthreads = 32; 
-  int G = ((int)(p-1)+Nthreads)/Nthreads;
+  int Nthreads = 32;
+  dim3 B = (32, 1,1); 
+  dim3 G = ((p-1)+Nthreads)/(32,1,1);
 
   double deviceStart = clock();
 
@@ -150,7 +147,7 @@ int main (int argc, char **argv) {
   cudaMalloc(&d_a, Nthreads*sizeof(unsigned int));
 
   
-  findSecretKey<<< G,Nthreads >>> (g, p, h,d_a);
+  findSecretKey<<< G,B >>> (g, p, h,d_a);
   cudaDeviceSynchronize();
 
   double deviceEnd = clock();
