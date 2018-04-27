@@ -114,21 +114,21 @@ int main (int argc, char **argv) {
        // x=i+1;
       }
     }
-    double endTime = clock();
+   // double endTime = clock();
 
-    double totalTime = (endTime-startTime)/CLOCKS_PER_SEC;
-    double work = (double) p;
-    double throughput = work/totalTime;
+   // double totalTime = (endTime-startTime)/CLOCKS_PER_SEC;
+    //double work = (double) p;
+   // double throughput = work/totalTime;
 
     printf("Searching all keys took %g seconds, throughput was %g values tested per second.\n", totalTime, throughput);
   }
     
     /* Q3 After finding the secret key, decrypt the message */
-  int bufferSize = 1024;
-  unsigned char *message = (unsigned char *) malloc(bufferSize*sizeof(unsigned char));
-  unsigned int charsPerInt = (n-1)/8 ;
-  unsigned int Nchars = strlen(message);
-  Nints = strlen(message)/charsPerInt;
+ // int bufferSize = 1024;
+ // unsigned char *message = (unsigned char *) malloc(bufferSize*sizeof(unsigned char));
+ // unsigned int charsPerInt = (n-1)/8 ;
+ // unsigned int Nchars = strlen(message);
+ // Nints = strlen(message)/charsPerInt;
   ElGamalDecrypt(Zmessage,a,Nints,p,x);
 
   convertZToString(Zmessage, Nints, message, Nchars);
