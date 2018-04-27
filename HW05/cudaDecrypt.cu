@@ -79,6 +79,13 @@ int main (int argc, char **argv) {
 
   /* Q3 Complete this function. Read in the public key data from public_key.txt
     and the cyphertexts from messages.txt. */
+      int bufferSize = 1024;
+      unsigned char *message = (unsigned char *) malloc(bufferSize*sizeof(unsigned char));
+      unsigned int charsPerInt = (n-1)/8 ;
+      unsigned int Nchars = strlen(message);
+      Nints = strlen(message)/charsPerInt;
+
+
     FILE* file;
     file = fopen("public_key.txt", "r");
     fscanf(file,"%u\n", &n);
@@ -98,13 +105,13 @@ int main (int argc, char **argv) {
     }
     fclose(file2);
   // find the secret key
-  if (x==0 || modExp(g,x,p)!=h) {
-    printf("Finding the secret key...\n");
-    double startTime = clock();
-    for (unsigned int i=0;i<p-1;i++) {
-      if (modExp(g,i+1,p)==h) {
-        printf("Secret key found! x = %u \n", i+1);
-        x=i+1;
+ // if (x==0 || modExp(g,x,p)!=h) {
+   // printf("Finding the secret key...\n");
+   // double startTime = clock();
+   // for (unsigned int i=0;i<p-1;i++) {
+     // if (modExp(g,i+1,p)==h) {
+       // printf("Secret key found! x = %u \n", i+1);
+       // x=i+1;
       }
     }
     double endTime = clock();
