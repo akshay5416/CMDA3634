@@ -85,6 +85,8 @@ int main (int argc, char **argv) {
       Nints = mystrlen(message)/charsPerInt;
 */
 
+
+
     FILE* file;
     file = fopen("public_key.txt", "r");
     fscanf(file,"%u\n", &n);
