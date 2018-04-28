@@ -43,11 +43,11 @@ __global__ void findSecretKey(unsigned int g, unsigned int p, unsigned int h, un
   //unique global thread ID
   int id = thread + block*blockSize;
 
- if (id < p-1) {  
+ if (id < p) {  
    // for (unsigned int i=0;i<p-1;i++) {
       if (modExponential(g, id,p)==h) {
        //iintf("Secret key found! x = %u \n", i+1);
-        *d_a=id-1;
+        *d_a=id;
       }
     }
    // double endTime = clock();
