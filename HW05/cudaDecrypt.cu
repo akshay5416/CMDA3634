@@ -78,11 +78,11 @@ int main (int argc, char **argv) {
 
   /* Q3 Complete this function. Read in the public key data from public_key.txt
     and the cyphertexts from messages.txt. */
-      int bufferSize = 1024;
-     unsigned char *message = (unsigned char *) malloc(bufferSize*sizeof(unsigned char));
-      unsigned int charsPerInt = (n-1)/8 ;
-      unsigned int Nchars = mystrlen(message);
-      Nints = mystrlen(message)/charsPerInt;
+     // int bufferSize = 1024;
+    // unsigned char *message = (unsigned char *) malloc(bufferSize*sizeof(unsigned char));
+     // unsigned int charsPerInt = (n-1)/8 ;
+     // unsigned int Nchars = mystrlen(message);
+     // Nints = mystrlen(message)/charsPerInt;
 
     FILE* file;
     file = fopen("public_key.txt", "r");
@@ -97,68 +97,48 @@ int main (int argc, char **argv) {
     unsigned int count;
     fscanf(file2,"%u\n", &count);
 
-    u
-
     unsigned int *Zmessage = (unsigned int *) malloc(Nints*sizeof(unsigned int));
-    unsigned int *a = (unsigned int *) malloc(count*sizeof(unsigned int));
-    for(int i = 0; i<Nints; i++){
+    unsigned int *a = (unsigned int *) malloc(Nints*sizeof(unsigned int));
+
+    for(int i = 0; i<count; i++){
         fscanf(file2, "%u %u\n", &Zmessage[i], &a[i]);
     }
     fclose(file2);
-  // find the secret key
- // if (x==0 || modExp(g,x,p)!=h) {
-   // printf("Finding the secret key...\n");
-   // double startTime = clock();
-   // for (unsigned int i=0;i<p-1;i++) {
-     // if (modExp(g,i+1,p)==h) {
-       // printf("Secret key found! x = %u \n", i+1);
-       // x=i+1;
-     // }
-   // }
-   // double endTime = clock();
+//find the secret key
+  int Nthreads = 32;
+  dim3 B = (32, 1,1);
+  dim3 G = ((p-1)+Nthreads)/(32,1,1);
 
-   // double totalTime = (endTime-startTime)/CLOCKS_PER_SEC;
-    //double work = (double) p;
-   // double throughput = work/totalTime;
+  double deviceStart = clock();
 
-   // printf("Searching all keys took %g seconds, throughput was %g values tested per second.\n", totalTime, throughput);
-  //}
+  unsigned int *h_a = (unsigned int *) malloc(sizeof(unsigned int));
+  unsigned int *d_a;
+  cudaMalloc(&d_a, Nthreads*sizeof(unsigned int));
+
+
+  findSecretKey<<<G,B>>> (g, p, h,d_a);
+  cudaDeviceSynchronize();
+
+  double deviceEnd = clock();
+  double deviceTime = (deviceEnd-deviceStart)/(double) CLOCKS_PER_SEC;
+
+  cudaMemcpy(h_a,d_a, Nthreads*sizeof(unsigned int), cudaMemcpyDeviceToHost);
+
+  printf("The secret key is %u\n ", h_a);
+  printf("The device took %d seconds to find the secret key \n", deviceTime);
     
     /* Q3 After finding the secret key, decrypt the message */
- // int bufferSize = 1024;
- // unsigned char *message = (unsigned char *) malloc(bufferSize*sizeof(unsigned char));
- // unsigned int charsPerInt = (n-1)/8 ;
- // unsigned int Nchars = strlen(message);
- // Nints = strlen(message)/charsPerInt;
+  int bufferSize = 1024;
+  unsigned char *message = (unsigned char *) malloc(bufferSize*sizeof(unsigned char));
+  unsigned int charsPerInt = (n-1)/8 ;
+  unsigned int Nchars = mystrlen(message);
+               Nints = mystrlen(message)/charsPerInt;
   ElGamalDecrypt(Zmessage,a,Nints,p,x);
 
   convertZToString(Zmessage, Nints, message, Nchars);
   printf("Decrypted Message = %s\n", message);
 
 /* Q4 Make the search for the secret key parallel on the GPU using CUDA. */
-  int Nthreads = 32;
-  dim3 B = (32, 1,1); 
-  dim3 G = ((p-1)+Nthreads)/(32,1,1);
-
-  double deviceStart = clock();
-
-  unsigned int *h_a = (unsigned int *) malloc(sizeof(unsigned int));
-  unsigned int *d_a; 
-  cudaMalloc(&d_a, Nthreads*sizeof(unsigned int));
-
-  
-  findSecretKey<<< G,B >>> (g, p, h,d_a);
-  cudaDeviceSynchronize();
-
-  double deviceEnd = clock();
-  double deviceTime = (deviceEnd-deviceStart)/(double) CLOCKS_PER_SEC;
-  
-  cudaMemcpy(h_a,d_a, Nthreads*sizeof(unsigned int), cudaMemcpyDeviceToHost);
-
-  printf("The secret key is %u\n ", h_a);
-  printf("The device took %d seconds to find the secret key \n", deviceTime); 
- // printf("The effective band:with of the device was % GB/s\n", totalMem/(1E9*deviceTime));
-  
   cudaFree(d_a);
   free(h_a);
 
