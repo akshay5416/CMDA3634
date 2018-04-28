@@ -43,11 +43,11 @@ __global__ void findSecretKey(unsigned int g, unsigned int p, unsigned int h, un
   //unique global thread ID
   int id = thread + block*blockSize;
 
- if (id < p) {  
+ if (id < p-1) {  
    // for (unsigned int i=0;i<p-1;i++) {
       if (modExponential(g, id,p)==h) {
        //iintf("Secret key found! x = %u \n", i+1);
-        *d_a=id;
+        *d_a=id-1;
       }
     }
    // double endTime = clock();
@@ -66,7 +66,8 @@ int main (int argc, char **argv) {
 
   /* Part 2. Start this program by first copying the contents of the main function from 
      your completed decrypt.c main function. */
-    //declare storage for an ElGamal cryptosytem
+
+//declare storage for an ElGamal cryptosytem
   unsigned int n, p, g, h, x;
   unsigned int Nints;
 
@@ -78,12 +79,6 @@ int main (int argc, char **argv) {
 
   /* Q3 Complete this function. Read in the public key data from public_key.txt
     and the cyphertexts from messages.txt. */
-     // int bufferSize = 1024;
-    // unsigned char *message = (unsigned char *) malloc(bufferSize*sizeof(unsigned char));
-     // unsigned int charsPerInt = (n-1)/8 ;
-     // unsigned int Nchars = mystrlen(message);
-     // Nints = mystrlen(message)/charsPerInt;
-
     FILE* file;
     file = fopen("public_key.txt", "r");
     fscanf(file,"%u\n", &n);
@@ -92,53 +87,53 @@ int main (int argc, char **argv) {
     fscanf(file,"%u\n", &h);
     fclose(file);
 
-     FILE *file2;
+    FILE *file2;
     file2 = fopen("messages.txt", "r");
     unsigned int count;
     fscanf(file2,"%u\n", &count);
-
     unsigned int *Zmessage = (unsigned int *) malloc(Nints*sizeof(unsigned int));
     unsigned int *a = (unsigned int *) malloc(Nints*sizeof(unsigned int));
-
     for(int i = 0; i<count; i++){
         fscanf(file2, "%u %u\n", &Zmessage[i], &a[i]);
     }
     fclose(file2);
-//find the secret key
-  int Nthreads = 32;
-  dim3 B = (32, 1,1);
-  dim3 G = ((p-1)+Nthreads)/(32,1,1);
 
-  double deviceStart = clock();
+/* Q4 Make the search for the secret key parallel on the GPU using CUDA. */
+    // find the secret key 
+    int Nthreads = 32;
+    dim3 B(32,1,1);
+    //grid dimensions
+    dim3 G((p+32-1)/32,1,1);
 
-  unsigned int *h_a = (unsigned int *) malloc(sizeof(unsigned int));
-  unsigned int *d_a;
-  cudaMalloc(&d_a, Nthreads*sizeof(unsigned int));
+    unsigned int *d_a; 
+    unsigned int *h_a; 
 
+    cudaMalloc(&d_a, Nthreads*sizeof(unsigned int));
+    h_a = (unsigned int *) malloc(sizeof(unsigned int));
 
-  findSecretKey<<<G,B>>> (g, p, h,d_a);
-  cudaDeviceSynchronize();
+    double deviceStart = clock();
+    findSecretKey <<<G,B >>>(g,p, h,d_a);
+    cudaDeviceSynchronize();
 
-  double deviceEnd = clock();
-  double deviceTime = (deviceEnd-deviceStart)/(double) CLOCKS_PER_SEC;
-
-  cudaMemcpy(h_a,d_a, Nthreads*sizeof(unsigned int), cudaMemcpyDeviceToHost);
-
-  printf("The secret key is %u\n ", h_a);
-  printf("The device took %d seconds to find the secret key \n", deviceTime);
+    double deviceEnd = clock();
+    double deviceTime = (deviceEnd-deviceStart)/(double) CLOCKS_PER_SEC;
     
+    cudaMemcpy(h_a, d_a, sizeof(unsigned int),cudaMemcpyDeviceToHost);
+
+    printf("The secret key is %u \n", *h_a);
+
+
     /* Q3 After finding the secret key, decrypt the message */
   int bufferSize = 1024;
   unsigned char *message = (unsigned char *) malloc(bufferSize*sizeof(unsigned char));
   unsigned int charsPerInt = (n-1)/8 ;
   unsigned int Nchars = mystrlen(message);
-               Nints = mystrlen(message)/charsPerInt;
+  Nints = mystrlen(message)/charsPerInt;
   ElGamalDecrypt(Zmessage,a,Nints,p,x);
 
   convertZToString(Zmessage, Nints, message, Nchars);
   printf("Decrypted Message = %s\n", message);
 
-/* Q4 Make the search for the secret key parallel on the GPU using CUDA. */
   cudaFree(d_a);
   free(h_a);
 
