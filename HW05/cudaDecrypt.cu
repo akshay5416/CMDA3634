@@ -136,8 +136,8 @@ int main (int argc, char **argv) {
   Nints = mystrlen(message)/charsPerInt;
   printf("This is error 5 \n");
   ElGamalDecrypt(Zmessage,a,Nints,p,x);
-
-  convertZToString(Zmessage, Nints, message, Nchars);
+  
+  convertZToString(Zmessage, count, message, Nchars);
   printf("Decrypted Message = %s\n", message);
 
   cudaFree(d_a);
