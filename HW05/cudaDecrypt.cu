@@ -91,6 +91,7 @@ int main (int argc, char **argv) {
     file2 = fopen("messages.txt", "r");
     unsigned int count;
     fscanf(file2,"%u\n", &count);
+    Nints = count;
     unsigned int *Zmessage = (unsigned int *) malloc(Nints*sizeof(unsigned int));
     unsigned int *a = (unsigned int *) malloc(Nints*sizeof(unsigned int));
     for(int i = 0; i<count; i++){
