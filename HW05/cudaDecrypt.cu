@@ -126,15 +126,15 @@ int main (int argc, char **argv) {
 
     /* Q3 After finding the secret key, decrypt the message */
   int bufferSize = 1024;
-  print("This is error 1 \n");
+  printf("This is error 1 \n");
   unsigned char *message = (unsigned char *) malloc(bufferSize*sizeof(unsigned char));
-  print("This is error 2 \n");
+  printf("This is error 2 \n");
   unsigned int charsPerInt = (n-1)/8 ;
-  print("This is error3 \n");
+  printf("This is error3 \n");
   unsigned int Nchars = mystrlen(message);
-  print("This is error 4 \n");
+  printf("This is error 4 \n");
   Nints = mystrlen(message)/charsPerInt;
-  print("This is error 5 \n");
+  printf("This is error 5 \n");
   ElGamalDecrypt(Zmessage,a,Nints,p,x);
 
   convertZToString(Zmessage, Nints, message, Nchars);
