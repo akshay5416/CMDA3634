@@ -47,8 +47,7 @@ __global__ void findSecretKey(unsigned int g, unsigned int p, unsigned int h, un
    // for (unsigned int i=0;i<p-1;i++) {
       if (modExponential(g, id,p)==h) {
        //iintf("Secret key found! x = %u \n", i+1);
-        *d_a=id;
-         printf("Secret key is ! x = %u \n", d_a);
+        *d_a=id;  
       }
     }
    // double endTime = clock();
@@ -126,10 +125,15 @@ int main (int argc, char **argv) {
 
     /* Q3 After finding the secret key, decrypt the message */
   int bufferSize = 1024;
+  print("This is error 1 \n");
   unsigned char *message = (unsigned char *) malloc(bufferSize*sizeof(unsigned char));
+  print("This is error 2 \n");
   unsigned int charsPerInt = (n-1)/8 ;
+  print("This is error3 \n");
   unsigned int Nchars = mystrlen(message);
+  print("This is error 4 \n");
   Nints = mystrlen(message)/charsPerInt;
+  print("This is error 5 \n");
   ElGamalDecrypt(Zmessage,a,Nints,p,x);
 
   convertZToString(Zmessage, Nints, message, Nchars);
