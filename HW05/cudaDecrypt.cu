@@ -117,7 +117,7 @@ int main (int argc, char **argv) {
     cudaDeviceSynchronize();
 
     double deviceEnd = clock();
-    double deviceTime = (deviceEnd-deviceStart)/(double) CLOCKS_PER_SEC;
+    double deviceTime = (deviceEnd-deviceStart)/CLOCKS_PER_SEC;
     
     cudaMemcpy(h_a, d_a, sizeof(unsigned int),cudaMemcpyDeviceToHost);
 
