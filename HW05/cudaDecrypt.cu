@@ -91,11 +91,10 @@ int main (int argc, char **argv) {
     file2 = fopen("messages.txt", "r");
     unsigned int count;
     fscanf(file2,"%u\n", &count);
-    Nints = count;
-    unsigned int *Zmessage = (unsigned int *) malloc(Nints*sizeof(unsigned int));
-    unsigned int *a = (unsigned int *) malloc(Nints*sizeof(unsigned int));
+    unsigned int *Zmessage = (unsigned int *) malloc(count*sizeof(unsigned int));
+    unsigned int *a = (unsigned int *) malloc(count*sizeof(unsigned int));
     for(int i = 0; i<count; i++){
-        fscanf(file2, "%u %u\n", &Zmessage[i], &a[i]);
+        fscanf(file2, "%u %u", &Zmessage[i], &a[i]);
     }
     fclose(file2);
 
@@ -129,16 +128,36 @@ int main (int argc, char **argv) {
   printf("This is error 1 \n");
   unsigned char *message = (unsigned char *) malloc(bufferSize*sizeof(unsigned char));
   printf("This is error 2 \n");
-  unsigned int charsPerInt = (n-1)/8 ;
+  unsigned int charsPerInt = (n-1)/8*count ;
   printf("This is error3 \n");
-  unsigned int Nchars = mystrlen(message);
-  printf("This is error 4 \n");
-  Nints = mystrlen(message)/charsPerInt;
-  printf("This is error 5 \n");
-  ElGamalDecrypt(Zmessage,a,Nints,p,x);
-  
-  convertZToString(Zmessage, count, message, Nchars);
-  printf("Decrypted Message = %s\n", message);
+ //  int bufferSize = 1024;
+  unsigned char *message = (unsigned char *) malloc(bufferSize*sizeof(unsigned char));
+ //   unsigned char *message = malloc(bufferSize*sizeof(unsigned char));
+  printf("Error 1\n");
+  unsigned int charsPerInt = (n-1)/8*count;
+  printf("Error 1.2\n");
+  ElGamalDecrypt(Zmessage, a, count, p, x);
+  printf("Error 1.3\n");
+  convertZToString(Zmessage, count, message, charsPerInt);
+ // printf("Error 2\n");  
+ // unsigned int Nchars = strlen(message);
+
+ // printf("Error 3\n");
+ // Nints = strlen(message)/charsPerInt;
+ // Nints = count;
+ // printf("Error 4\n");
+ // ElGamalDecrypt(Zmessage,a,Nints,p,x);
+ // ElGamalDecrypt(Zmessage, a, count, p , x);
+ // printf("Error 5\n");
+ // printf("Zmessage = %u\n", Zmessage); 
+ // printf("a = %u\n", a); 
+ // printf("Nints = %u\n", Nints);
+ // printf("Count = %u\n", count);
+ // printf("p = %u\n", p);
+ // convertZToString(Zmessage, count, message, Nchars);
+ // printf("Error 6\n");
+  printf("Decrypted Message = \"%s\"\n", message);
+  printf("\n");
 
   cudaFree(d_a);
   free(h_a);

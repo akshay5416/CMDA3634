@@ -40,8 +40,8 @@ int main (int argc, char **argv) {
 
   unsigned int charsPerInt = (n-1)/8 ; 
  
-  //padString(message, charsPerInt);
-  //printf("Padded Message = \"%s\"\n", message);
+    padString(message, charsPerInt);
+    printf("Padded Message = \"%s\"\n", message);
 
   unsigned int Nchars = strlen(message);
   unsigned int Nints = strlen(message)/charsPerInt;
