@@ -46,17 +46,10 @@ __global__ void findSecretKey(unsigned int g, unsigned int p, unsigned int h, un
  if (id < p-1) {  
    // for (unsigned int i=0;i<p-1;i++) {
       if (modExponential(g, id,p)==h) {
-       //iintf("Secret key found! x = %u \n", i+1);
         *d_a=id;  
       }
     }
-   // double endTime = clock();
 
-   // double totalTime = (endTime-startTime)/CLOCKS_PER_SEC;
-   // double work = (double) p;
-   // double throughput = work/totalTime;
-
-   // printf("Searching all keys took %g seconds, throughput was %g values tested per second.\n", totalTime, throughput);
   }
 
 
@@ -129,23 +122,6 @@ int main (int argc, char **argv) {
   unsigned int charsPerInt = (n-1)/8*count;
   ElGamalDecrypt(Zmessage, a, count, p,x);
   convertZToString(Zmessage, count, message, charsPerInt);
- // printf("Error 2\n");  
- // unsigned int Nchars = strlen(message);
-
- // printf("Error 3\n");
- // Nints = strlen(message)/charsPerInt;
- // Nints = count;
- // printf("Error 4\n");
- // ElGamalDecrypt(Zmessage,a,Nints,p,x);
- // ElGamalDecrypt(Zmessage, a, count, p , x);
- // printf("Error 5\n");
- // printf("Zmessage = %u\n", Zmessage); 
- // printf("a = %u\n", a); 
- // printf("Nints = %u\n", Nints);
- // printf("Count = %u\n", count);
- // printf("p = %u\n", p);
- // convertZToString(Zmessage, count, message, Nchars);
- // printf("Error 6\n");
   printf("Decrypted Message = \"%s\"\n", message);
   printf("\n");
 

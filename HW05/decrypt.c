@@ -35,7 +35,6 @@ int main (int argc, char **argv) {
     fscanf(file2,"%u\n", &count);
     unsigned int *Zmessage = (unsigned int *) malloc(count*sizeof(unsigned int));
       unsigned int *a = (unsigned int *) malloc(count*sizeof(unsigned int));
-   // unsigned int *a = (unsigned int *) malloc(Nints*sizeof(unsigned int));   
     for(unsigned int i = 0; i<count; i++){
 	fscanf(file2, "%u %u", &Zmessage[i], &a[i]);
         printf("Zmessage[%u] : %u \n", i, Zmessage[i]);
@@ -68,30 +67,12 @@ int main (int argc, char **argv) {
  // ElGamalDecrypt(Zmessage, a, count, p, x);
   int bufferSize = 1024;
   unsigned char *message = (unsigned char *) malloc(bufferSize*sizeof(unsigned char));
- //   unsigned char *message = malloc(bufferSize*sizeof(unsigned char));
   printf("Error 1\n");
   unsigned int charsPerInt = (n-1)/8*count;
   printf("Error 1.2\n");
   ElGamalDecrypt(Zmessage, a, count, p, x);
   printf("Error 1.3\n");
   convertZToString(Zmessage, count, message, charsPerInt);
- // printf("Error 2\n");  
- // unsigned int Nchars = strlen(message);
-  
- // printf("Error 3\n");
- // Nints = strlen(message)/charsPerInt;
- // Nints = count;
- // printf("Error 4\n");
- // ElGamalDecrypt(Zmessage,a,Nints,p,x);
- // ElGamalDecrypt(Zmessage, a, count, p , x);
- // printf("Error 5\n");
- // printf("Zmessage = %u\n", Zmessage); 
- // printf("a = %u\n", a); 
- // printf("Nints = %u\n", Nints);
- // printf("Count = %u\n", count);
- // printf("p = %u\n", p);
- // convertZToString(Zmessage, count, message, Nchars);
- // printf("Error 6\n");
   printf("Decrypted Message = \"%s\"\n", message);
   printf("\n");
   return 0;
