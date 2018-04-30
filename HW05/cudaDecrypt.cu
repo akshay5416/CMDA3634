@@ -125,19 +125,9 @@ int main (int argc, char **argv) {
 
     /* Q3 After finding the secret key, decrypt the message */
   int bufferSize = 1024;
-  printf("This is error 1 \n");
   unsigned char *message = (unsigned char *) malloc(bufferSize*sizeof(unsigned char));
-  printf("This is error 2 \n");
-  unsigned int charsPerInt = (n-1)/8*count ;
-  printf("This is error3 \n");
- //  int bufferSize = 1024;
- // unsigned char *message = (unsigned char *) malloc(bufferSize*sizeof(unsigned char));
- //   unsigned char *message = malloc(bufferSize*sizeof(unsigned char));
-  printf("Error 1\n");
- // unsigned int charsPerInt = (n-1)/8*count;
-  printf("Error 1.2\n");
-  ElGamalDecrypt(Zmessage, a, count, p, x);
-  printf("Error 1.3\n");
+  unsigned int charsPerInt = (n-1)/8*count;
+  ElGamalDecrypt(Zmessage, a, count, p, h_a);
   convertZToString(Zmessage, count, message, charsPerInt);
  // printf("Error 2\n");  
  // unsigned int Nchars = strlen(message);
