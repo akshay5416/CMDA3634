@@ -121,7 +121,7 @@ int main (int argc, char **argv) {
     cudaMemcpy(h_a, d_a, sizeof(unsigned int),cudaMemcpyDeviceToHost);
 
     printf("The secret key is %u \n", *h_a);
-    unsigned int x = *h_a;
+    x = *h_a;
 
     /* Q3 After finding the secret key, decrypt the message */
   int bufferSize = 1024;
