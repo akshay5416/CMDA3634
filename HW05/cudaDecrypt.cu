@@ -127,7 +127,7 @@ int main (int argc, char **argv) {
   int bufferSize = 1024;
   unsigned char *message = (unsigned char *) malloc(bufferSize*sizeof(unsigned char));
   unsigned int charsPerInt = (n-1)/8*count;
-  ElGamalDecrypt(Zmessage, a, count, p, h_a);
+  ElGamalDecrypt(Zmessage, a, count, p,&h_a);
   convertZToString(Zmessage, count, message, charsPerInt);
  // printf("Error 2\n");  
  // unsigned int Nchars = strlen(message);
